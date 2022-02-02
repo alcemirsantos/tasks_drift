@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/database.dart';
+import '../../data/banco_de_dados.dart';
 
-class NewTaskInput extends StatefulWidget {
-  const NewTaskInput({
+class CampoNovaTarefa extends StatefulWidget {
+  const CampoNovaTarefa({
     Key key,
   }) : super(key: key);
 
   @override
-  _NewTaskInputState createState() => _NewTaskInputState();
+  _CampoNovaTarefaState createState() => _CampoNovaTarefaState();
 }
 
-class _NewTaskInputState extends State<NewTaskInput> {
-  DateTime newTaskDate;
-  TextEditingController controller;
+class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
+  DateTime dataLimite;
+  TextEditingController controladorDeTexto;
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController();
+    controladorDeTexto = TextEditingController();
   }
 
   @override
@@ -39,17 +39,17 @@ class _NewTaskInputState extends State<NewTaskInput> {
   Expanded _buildTextField(BuildContext context) {
     return Expanded(
       child: TextField(
-        controller: controller,
-        decoration: InputDecoration(hintText: 'Task Name'),
+        controller: controladorDeTexto,
+        decoration: InputDecoration(hintText: 'Descrição da Tarefa'),
         onSubmitted: (inputName) {
-          final database = Provider.of<Database>(context, listen: false);
-          final task = Task(
-            name: inputName,
-            dueDate: newTaskDate,
-            completed: false,
+          final database = Provider.of<BancoDeDados>(context, listen: false);
+          final tarefa = Tarefa(
+            nome: inputName,
+            dataLimite: dataLimite,
+            terminada: false,
           );
-          database.insertTask(task);
-          resetValuesAfterSubmit();
+          database.insereTarefa(tarefa);
+          limpaValoesAposInsercao();
         },
       ),
     );
@@ -59,7 +59,7 @@ class _NewTaskInputState extends State<NewTaskInput> {
     return IconButton(
       icon: Icon(Icons.calendar_today),
       onPressed: () async {
-        newTaskDate = await showDatePicker(
+        dataLimite = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
           firstDate: DateTime(2010),
@@ -69,10 +69,10 @@ class _NewTaskInputState extends State<NewTaskInput> {
     );
   }
 
-  void resetValuesAfterSubmit() {
+  void limpaValoesAposInsercao() {
     setState(() {
-      newTaskDate = null;
-      controller.clear();
+      dataLimite = null;
+      controladorDeTexto.clear();
     });
   }
 }

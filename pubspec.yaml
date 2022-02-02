@@ -1,5 +1,5 @@
-name: moor_template
-description: A new Flutter project.
+name: tasks_drift
+description: Um projeto Flutter para exemplificar o uso de Drift.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

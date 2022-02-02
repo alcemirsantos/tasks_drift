@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'data/database.dart';
-import 'ui/home_page.dart';
+import 'data/banco_de_dados.dart';
+import 'ui/pagina_inicial.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  // Este widget é a raiz da aplicação.
   @override
   Widget build(BuildContext context) {
-    final db = Database();
-    return Provider<Database>(
-      // The single instance of Database
+    final db = BancoDeDados();
+    return Provider<BancoDeDados>(
+      // Esta é uma instância única do banco de dados que será compartilhada
       create: (context) => db,
       dispose: (context, db) => db.close(),
       child: MaterialApp(
-        title: 'Tasks Drift Example',
-        home: HomePage(),
+        title: 'Agenda de Tarefas',
+        home: PaginaInicial(),
       ),
     );
   }

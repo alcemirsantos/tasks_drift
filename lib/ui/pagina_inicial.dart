@@ -2,50 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../data/database.dart';
-import 'widgets/new_task_input_widget.dart';
+import '../data/banco_de_dados.dart';
+import 'widgets/campo_nova_tarefa.dart';
 
-class HomePage extends StatefulWidget {
+class PaginaInicial extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _PaginaInicialState createState() => _PaginaInicialState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PaginaInicialState extends State<PaginaInicial> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tasks'),
+        title: Text('Tarefas Agendadas'),
       ),
       body: Column(
         children: <Widget>[
           Expanded(child: _buildTaskList(context)),
-          NewTaskInput(),
+          CampoNovaTarefa(),
         ],
       ),
     );
   }
 
-  StreamBuilder<List<Task>> _buildTaskList(BuildContext context) {
-    final Database database = Provider.of<Database>(context);
+  StreamBuilder<List<Tarefa>> _buildTaskList(BuildContext context) {
+    final BancoDeDados bd = Provider.of<BancoDeDados>(context);
 
     return StreamBuilder(
-      stream: database.watchAllTasks(),
-      builder: (context, AsyncSnapshot<List<Task>> snapshot) {
+      stream: bd.observaAsTarefas(),
+      builder: (context, AsyncSnapshot<List<Tarefa>> snapshot) {
         final tasks = snapshot.data ?? [];
 
         return ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (_, index) {
             final itemTask = tasks[index];
-            return _buildListItem(itemTask, database);
+            return _buildListItem(itemTask, bd);
           },
         );
       },
     );
   }
 
-  Widget _buildListItem(Task itemTask, Database database) {
+  Widget _buildListItem(Tarefa itemTask, BancoDeDados bd) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       secondaryActions: <Widget>[
@@ -53,15 +53,15 @@ class _HomePageState extends State<HomePage> {
           caption: 'Delete',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => database.deleteTask(itemTask),
+          onTap: () => bd.removeTarefa(itemTask),
         )
       ],
       child: CheckboxListTile(
-        title: Text(itemTask.name),
-        subtitle: Text(itemTask.dueDate?.toString() ?? 'No date'),
-        value: itemTask.completed,
+        title: Text(itemTask.nome),
+        subtitle: Text(itemTask.dataLimite?.toString() ?? 'Sem data'),
+        value: itemTask.terminada,
         onChanged: (newValue) {
-          database.updateTask(itemTask.copyWith(completed: newValue));
+          bd.atualizaTarefa(itemTask.copyWith(terminada: newValue));
         },
       ),
     );
