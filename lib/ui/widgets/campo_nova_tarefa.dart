@@ -1,5 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_drift/data/dao/tarefa_dao.dart';
 
 import '../../data/banco_de_dados.dart';
 
@@ -29,33 +31,33 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          _buildTextField(context),
-          _buildDateButton(context),
+          _getCampoDeTexto(context),
+          _getBotaoDeData(context),
         ],
       ),
     );
   }
 
-  Expanded _buildTextField(BuildContext context) {
+  Expanded _getCampoDeTexto(BuildContext context) {
     return Expanded(
       child: TextField(
         controller: controladorDeTexto,
         decoration: InputDecoration(hintText: 'Descrição da Tarefa'),
         onSubmitted: (inputName) {
-          final database = Provider.of<BancoDeDados>(context, listen: false);
-          final tarefa = Tarefa(
-            nome: inputName,
-            dataLimite: dataLimite,
-            terminada: false,
+          final dao = Provider.of<TarefaDao>(context, listen: false);
+          final tarefa = TarefasCompanion(
+            nome: Value(inputName),
+            dataLimite: Value(dataLimite),
+            terminada: Value(false),
           );
-          database.insereTarefa(tarefa);
+          dao.insereTarefa(tarefa);
           limpaValoesAposInsercao();
         },
       ),
     );
   }
 
-  IconButton _buildDateButton(BuildContext context) {
+  IconButton _getBotaoDeData(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.calendar_today),
       onPressed: () async {

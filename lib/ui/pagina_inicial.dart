@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:tasks_drift/data/dao/tarefa_dao.dart';
 
 import '../data/banco_de_dados.dart';
 import 'widgets/campo_nova_tarefa.dart';
@@ -19,18 +20,19 @@ class _PaginaInicialState extends State<PaginaInicial> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(child: _buildTaskList(context)),
+          Expanded(child: _getListaDeTarefas(context)),
           CampoNovaTarefa(),
         ],
       ),
     );
   }
 
-  StreamBuilder<List<Tarefa>> _buildTaskList(BuildContext context) {
-    final BancoDeDados bd = Provider.of<BancoDeDados>(context);
+  StreamBuilder<List<Tarefa>> _getListaDeTarefas(BuildContext context) {
+    final TarefaDao dao = Provider.of<TarefaDao>(context);
 
     return StreamBuilder(
-      stream: bd.observaAsTarefas(),
+      stream: dao.observaAsTarefas(),
+      // [DICA] stream: dao.observaSomenteTarefasConcluidas(),
       builder: (context, AsyncSnapshot<List<Tarefa>> snapshot) {
         final tasks = snapshot.data ?? [];
 
@@ -38,22 +40,22 @@ class _PaginaInicialState extends State<PaginaInicial> {
           itemCount: tasks.length,
           itemBuilder: (_, index) {
             final itemTask = tasks[index];
-            return _buildListItem(itemTask, bd);
+            return _getListaDeItens(itemTask, dao);
           },
         );
       },
     );
   }
 
-  Widget _buildListItem(Tarefa itemTask, BancoDeDados bd) {
+  Widget _getListaDeItens(Tarefa itemTask, TarefaDao dao) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Delete',
+          caption: 'Remover',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => bd.removeTarefa(itemTask),
+          onTap: () => dao.removeTarefa(itemTask),
         )
       ],
       child: CheckboxListTile(
@@ -61,7 +63,7 @@ class _PaginaInicialState extends State<PaginaInicial> {
         subtitle: Text(itemTask.dataLimite?.toString() ?? 'Sem data'),
         value: itemTask.terminada,
         onChanged: (newValue) {
-          bd.atualizaTarefa(itemTask.copyWith(terminada: newValue));
+          dao.atualizaTarefa(itemTask.copyWith(terminada: newValue));
         },
       ),
     );
