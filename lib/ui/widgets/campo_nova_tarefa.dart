@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_drift/data/dao/etiqueta_dao.dart';
 import 'package:tasks_drift/data/dao/tarefa_dao.dart';
 
 import '../../data/banco_de_dados.dart';
@@ -16,6 +17,7 @@ class CampoNovaTarefa extends StatefulWidget {
 
 class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
   DateTime dataLimite;
+  Etiqueta etiquetaSelecionada;
   TextEditingController controladorDeTexto;
 
   @override
@@ -32,6 +34,7 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           _getCampoDeTexto(context),
+          _getBotaoSelecaoDeEtiqueta(context),
           _getBotaoDeData(context),
         ],
       ),
@@ -49,11 +52,66 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
             nome: Value(inputName),
             dataLimite: Value(dataLimite),
             terminada: Value(false),
+            nomeEtiqueta: Value(etiquetaSelecionada.nome),
           );
           dao.insereTarefa(tarefa);
           limpaValoesAposInsercao();
         },
       ),
+    );
+  }
+
+  StreamBuilder<List<Etiqueta>> _getBotaoSelecaoDeEtiqueta(
+      BuildContext context) {
+    return StreamBuilder<List<Etiqueta>>(
+      stream: Provider.of<EtiquetaDao>(context).watchTags(),
+      builder: (context, snapshot) {
+        final etiquetas = snapshot.data ?? [];
+
+        DropdownMenuItem<Etiqueta> dropdownFromTag(Etiqueta etiqueta) {
+          return DropdownMenuItem(
+            value: etiqueta,
+            child: Row(
+              children: <Widget>[
+                Text(etiqueta.nome),
+                SizedBox(width: 5),
+                Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(etiqueta.cor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final dropdownMenuItems =
+            etiquetas.map((etiqueta) => dropdownFromTag(etiqueta)).toList()
+              // Adiciona "Sem Etiqueta" como o primeiro elemento da lista
+              ..insert(
+                0,
+                DropdownMenuItem(
+                  value: null,
+                  child: Text('Sem Etiqueta'),
+                ),
+              );
+
+        return Expanded(
+          child: DropdownButton(
+            onChanged: (Etiqueta etiqueta) {
+              setState(() {
+                etiquetaSelecionada = etiqueta;
+              });
+            },
+            isExpanded: true,
+            value: etiquetaSelecionada,
+            items: dropdownMenuItems,
+          ),
+        );
+      },
     );
   }
 
@@ -74,6 +132,7 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
   void limpaValoesAposInsercao() {
     setState(() {
       dataLimite = null;
+      etiquetaSelecionada = null;
       controladorDeTexto.clear();
     });
   }
