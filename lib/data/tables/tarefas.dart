@@ -20,4 +20,7 @@ class Tarefas extends Table {
   // Booleanos também não são saceitos, Drift converte eles para inteiros.
   // Os valores padrão são especificados como constantes
   BoolColumn get terminada => boolean().withDefault(Constant(false))();
+  // Este campo servirá como chave estrangeira para a tabela de Etiquetas
+  TextColumn get nomeEtiqueta =>
+      text().nullable().customConstraint('NULL REFERENCES etiquetas(nome)')();
 }
