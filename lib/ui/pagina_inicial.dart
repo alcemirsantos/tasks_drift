@@ -25,6 +25,26 @@ class _PaginaInicialState extends State<PaginaInicial> {
           ),
           CampoNovaTarefa(),
           CampoNovaEtiqueta(),
+          Row(
+            children: [
+              Text('Clique no botão para visualizar o Banco de Dados:'),
+              IconButton(
+                onPressed: () {
+                  final BancoDeDados db =
+                      Provider.of<BancoDeDados>(context, listen: false);
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => DriftDbViewer(db),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.leaderboard,
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
