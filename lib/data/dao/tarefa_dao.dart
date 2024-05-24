@@ -85,28 +85,29 @@ class TarefaDao extends DatabaseAccessor<BancoDeDados> with _$TarefaDaoMixin {
         .map((rows) => rows.map((row) {
               return TarefaEtiquetada(
                 tarefa: row.readTable(tarefas),
-                etiqueta: row.readTableOrNull(etiquetas),
+                etiqueta: row.readTableOrNull(etiquetas)!,
               );
             }).toList());
   }
 
-  Stream<List<Tarefa>> observaTarefasFinalizdasComSQL() {
-    // [Dica] você pode usar o 'customUpdate' para atualizar
-    return customSelect(
-      'SELECT * FROM tarefas WHERE terminada = 1 ORDER BY data_limite DESC, nome;',
-      // O Stream irá emitir novos valores quando os dados dentro da tabela
-      //  Tarefas mudar
-      readsFrom: {tarefas},
-    ).watch()
-        // customSelect ou customSelectStream retornam uma lista QueryRow
-        // O método abaixo executar cada vez que o Stream emitir um novo valor.
-        .map(
-      (rows) {
-        // Transformando o dado de uma linha da tabela em um objeto Tarefa.
-        return rows.map((row) => Tarefa.fromData(row.data)).toList();
-      },
-    );
-  }
+  // Stream<List<Tarefa>> observaTarefasFinalizdasComSQL() {
+  //   // [Dica] você pode usar o 'customUpdate' para atualizar
+  //   return customSelect(
+  //     'SELECT * FROM tarefas WHERE terminada = 1 ORDER BY data_limite DESC, nome;',
+  //     // O Stream irá emitir novos valores quando os dados dentro da tabela
+  //     //  Tarefas mudar
+  //     readsFrom: {tarefas},
+  //   )
+  //       .watch()
+  //       // customSelect ou customSelectStream retornam uma lista QueryRow
+  //       // O método abaixo executar cada vez que o Stream emitir um novo valor.
+  //       .map(
+  //     (rows) {
+  //       // Transformando o dado de uma linha da tabela em um objeto Tarefa.
+  //       return rows.map((row) => Tarefa.fromData(row.data)).toList();
+  //     },
+  //   );
+  // }
 }
 
 // É preciso juntar tarefas e tags manualmente.
@@ -116,7 +117,7 @@ class TarefaEtiquetada {
   final Etiqueta etiqueta;
 
   TarefaEtiquetada({
-    @required this.tarefa,
-    @required this.etiqueta,
+    required this.tarefa,
+    required this.etiqueta,
   });
 }

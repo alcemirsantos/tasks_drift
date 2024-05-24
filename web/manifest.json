@@ -1,6 +1,6 @@
 {
-    "name": "tasks_drift",
-    "short_name": "tasks_drift",
+    "name": "new_tasks_drift",
+    "short_name": "new_tasks_drift",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

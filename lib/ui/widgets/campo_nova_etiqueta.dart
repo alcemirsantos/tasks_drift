@@ -7,9 +7,7 @@ import 'package:tasks_drift/data/dao/etiqueta_dao.dart';
 import '../../data/banco_de_dados.dart';
 
 class CampoNovaEtiqueta extends StatefulWidget {
-  const CampoNovaEtiqueta({
-    Key key,
-  }) : super(key: key);
+  const CampoNovaEtiqueta({Key? key}) : super(key: key);
 
   @override
   _CampoNovaEtiquetaState createState() => _CampoNovaEtiquetaState();
@@ -19,7 +17,7 @@ class _CampoNovaEtiquetaState extends State<CampoNovaEtiqueta> {
   static const Color corPadrao = Colors.red;
 
   Color pickedTagColor = corPadrao;
-  TextEditingController controladorDeCampoDeTexto;
+  late TextEditingController controladorDeCampoDeTexto;
 
   @override
   void initState() {
@@ -88,7 +86,7 @@ class _CampoNovaEtiquetaState extends State<CampoNovaEtiqueta> {
             selectedColor: corPadrao,
             onMainColorChange: (colorSwatch) {
               setState(() {
-                pickedTagColor = colorSwatch;
+                pickedTagColor = colorSwatch!;
               });
               Navigator.of(context).pop();
             },

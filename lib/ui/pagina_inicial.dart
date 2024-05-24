@@ -61,7 +61,7 @@ class _PaginaInicialState extends State<PaginaInicial> {
       // [FAÇA O TESTE] stream: dao.observaSomenteTarefasConcluidas(),
       builder: (context, AsyncSnapshot<List<TarefaEtiquetada>> snapshot) {
         if (snapshot.hasData) {
-          final data = snapshot.data;
+          final data = snapshot.data!;
           return ListView.builder(
             itemCount: data.length,
             itemBuilder: (_, index) {
@@ -81,15 +81,30 @@ class _PaginaInicialState extends State<PaginaInicial> {
   /// Constrói o widget para mostrar cada uma [Etiqueta].
   Widget _getTarefa(TarefaEtiquetada tarefaEtiquetada, TarefaDao dao) {
     return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'Remover',
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => dao.removeTarefa(tarefaEtiquetada.tarefa),
-        )
-      ],
+      // Specify a key if the Slidable is dismissible.
+      key: const ValueKey(0),
+
+      // The start action pane is the one at the left or the top side.
+      startActionPane: ActionPane(
+        // A motion is a widget used to control how the pane animates.
+        motion: const ScrollMotion(),
+
+        // A pane can dismiss the Slidable.
+        dismissible: DismissiblePane(onDismissed: () {}),
+
+        // All actions are defined in the children parameter.
+        children: [
+          // A SlidableAction can have an icon and/or a label.
+          SlidableAction(
+            onPressed: (_) => dao.removeTarefa(tarefaEtiquetada.tarefa),
+            backgroundColor: Color(0xFFFE4A49),
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            label: 'Delete',
+          ),
+        ],
+      ),
+
       child: CheckboxListTile(
         title: Text(tarefaEtiquetada.tarefa.nome),
         secondary: _getEtiqueta(tarefaEtiquetada.etiqueta),

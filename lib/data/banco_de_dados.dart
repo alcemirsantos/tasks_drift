@@ -25,7 +25,7 @@ class BancoDeDados extends _$BancoDeDados {
 
   // Esta versão é versão do banco. Será utilizado pra a criação de Migrations.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

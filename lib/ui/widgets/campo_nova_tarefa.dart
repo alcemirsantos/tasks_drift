@@ -7,18 +7,16 @@ import 'package:tasks_drift/data/dao/tarefa_dao.dart';
 import '../../data/banco_de_dados.dart';
 
 class CampoNovaTarefa extends StatefulWidget {
-  const CampoNovaTarefa({
-    Key key,
-  }) : super(key: key);
+  const CampoNovaTarefa({Key? key}) : super(key: key);
 
   @override
   _CampoNovaTarefaState createState() => _CampoNovaTarefaState();
 }
 
 class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
-  DateTime dataLimite;
-  Etiqueta etiquetaSelecionada;
-  TextEditingController controladorDeTexto;
+  DateTime? dataLimite;
+  Etiqueta? etiquetaSelecionada;
+  late TextEditingController controladorDeTexto;
 
   @override
   void initState() {
@@ -52,7 +50,7 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
             nome: Value(inputName),
             dataLimite: Value(dataLimite),
             terminada: Value(false),
-            nomeEtiqueta: Value(etiquetaSelecionada.nome),
+            nomeEtiqueta: Value(etiquetaSelecionada?.nome),
           );
           dao.insereTarefa(tarefa);
           limpaValoesAposInsercao();
@@ -101,7 +99,7 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
 
         return Expanded(
           child: DropdownButton(
-            onChanged: (Etiqueta etiqueta) {
+            onChanged: (Etiqueta? etiqueta) {
               setState(() {
                 etiquetaSelecionada = etiqueta;
               });
@@ -124,7 +122,7 @@ class _CampoNovaTarefaState extends State<CampoNovaTarefa> {
           initialDate: DateTime.now(),
           firstDate: DateTime(2010),
           lastDate: DateTime(2050),
-        );
+        )!;
       },
     );
   }
