@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:tasks_drift/data/tables/etiquetas.dart';
 
 /// Ao decomenar a linha abaixo, o nome padrão da classe de dados da tabela
 ///  "Tarefas" seria "QualquerNomeQueVoceQueira"
@@ -22,5 +23,5 @@ class Tarefas extends Table {
   BoolColumn get terminada => boolean().withDefault(Constant(false))();
   // Este campo servirá como chave estrangeira para a tabela de Etiquetas
   TextColumn get nomeEtiqueta =>
-      text().nullable().customConstraint('NULL REFERENCES etiquetas(nome)')();
+      text().nullable().references(Etiquetas, #nome)();
 }
